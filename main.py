@@ -659,6 +659,27 @@ def router_node(state: AgentState) -> AgentState:
     
     user_input = state["user_input"]
     
+    # Check if user wants a complete overview/summary of everything
+    overview_keywords = [
+        'summary of everything', 'everything happening', 'complete summary', 'full overview',
+        'everything going on', 'all updates', 'comprehensive summary', 'overall status',
+        'whats happening', "what's happening", 'status of everything', 'complete update',
+        'full status', 'everything status', 'overall summary'
+    ]
+    
+    is_complete_overview = any(keyword in user_input.lower() for keyword in overview_keywords)
+    
+    if is_complete_overview:
+        # User wants everything - invoke all agents
+        logging.info("Complete overview requested - activating all agents")
+        state["agents_to_run"] = [
+            "TicketAnalyzerAgent",
+            "NewsAggregatorAgent", 
+            "ActivityTrackerAgent",
+            "InfrastructureCostMonitorAgent"
+        ]
+        return state
+    
     prompt = f"""
     You are an intelligent router AI for Technology-Garage company assistant. Decide which agents should handle this input:
 
@@ -722,6 +743,7 @@ def summarize_node(state: AgentState) -> AgentState:
     logging.info("Executing Summarize Node")
     
     agent_responses = state.get("agent_responses", {})
+    user_input = state.get("user_input", "")
     
     if not agent_responses:
         result = "No responses to summarize."
@@ -729,16 +751,51 @@ def summarize_node(state: AgentState) -> AgentState:
         # If only one agent responded, return its response directly without summarization
         result = list(agent_responses.values())[0]
     else:
-        # Multiple agents - create summary
-        responses_text = "\n\n".join([f"{k.upper()}: {v}" for k, v in agent_responses.items()])
+        # Multiple agents - create intelligent analysis
+        # Check if this is a complete overview request
+        overview_keywords = [
+            'summary of everything', 'everything happening', 'complete summary', 'full overview',
+            'everything going on', 'all updates', 'comprehensive summary', 'overall status',
+            'whats happening', "what's happening", 'status of everything', 'complete update'
+        ]
+        is_complete_overview = any(keyword in user_input.lower() for keyword in overview_keywords)
         
-        prompt = f"""
-        You are a helpful assistant. Create a single, clear, and concise summary from these agent responses.
-        Include at least one key point from EVERY agent's response.
-        Do NOT repeat agent names in the summary.
+        # Format all agent responses
+        responses_text = "\n\n".join([f"=== {k.upper().replace('_', ' ')} ===\n{v}" for k, v in agent_responses.items()])
         
-        {responses_text}
-        """
+        if is_complete_overview:
+            # Comprehensive analysis for "everything happening" requests
+            prompt = f"""You are an intelligent business analyst for Technology-Garage company. 
+
+The user asked: "{user_input}"
+
+Here are reports from all departments:
+
+{responses_text}
+
+Provide a comprehensive executive summary that:
+1. **Highlights key issues and priorities** - What needs immediate attention?
+2. **Identifies trends and patterns** - What's happening across all areas?
+3. **Gives actionable insights** - What should be done?
+4. **Provides a clear overview** - Overall health and status
+
+Structure your response with clear sections:
+-  **Key Priorities & Issues**
+-  **Current Status Overview**
+-  **Notable Updates**
+-  **Insights & Recommendations**
+
+Be concise but comprehensive. Make it easy to understand what's happening across the entire organization.
+"""
+        else:
+            # Standard multi-agent summary
+            prompt = f"""
+            You are a helpful assistant. Create a single, clear, and concise summary from these agent responses.
+            Include at least one key point from EVERY agent's response.
+            Do NOT repeat agent names in the summary.
+            
+            {responses_text}
+            """
         
         try:
             response = llm.invoke([HumanMessage(content=prompt)])
