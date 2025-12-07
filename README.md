@@ -2,7 +2,7 @@
 
 A LangGraph-based multi-agent system for managing tickets, tracking activities, aggregating news, and providing company information.
 
-## 🚀 Features
+## Features
 
 ### Five Intelligent Agents with Advanced Natural Language Understanding:
 
@@ -42,14 +42,14 @@ A LangGraph-based multi-agent system for managing tickets, tracking activities, 
    - Friendly and professional responses with contextual awareness
    - Handles greetings, help requests, and general questions
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.8+
 - Node.js 16+ (for frontend)
 - OpenAI API key
 - (Optional) NewsData.io API key
 
-## 🛠️ Installation
+## Installation
 
 ### Backend Setup
 
@@ -92,7 +92,7 @@ cd agent-app
 npm install
 ```
 
-## 🚀 Running the Application
+## Running the Application
 
 ### Start the Backend
 
@@ -112,7 +112,7 @@ npm run dev
 
 The frontend will start on `http://localhost:5173`
 
-## 📖 Usage Examples
+## Usage Examples
 
 ### Ticket Queries
 - "Show me all tickets"
@@ -189,7 +189,7 @@ You can query multiple agents at once:
 - "Latest AI news and show me completed activities"
 - "AWS costs and show all tickets"
 
-## 🧪 Sample Test Prompts
+## Sample Test Prompts
 
 Here are comprehensive test prompts to verify all agent functionalities:
 
@@ -307,7 +307,7 @@ Here are comprehensive test prompts to verify all agent functionalities:
     Expected: DigitalOcean cost breakdown
 ```
 
-## 🏗️ Architecture
+## Architecture
 
 The system uses LangGraph to create an intelligent multi-agent workflow:
 
@@ -325,14 +325,14 @@ The system uses LangGraph to create an intelligent multi-agent workflow:
 - **Smart Response Enhancement**: Transforms raw data into conversational, direct answers
 - **Multi-Agent Coordination**: Seamlessly combines responses from multiple agents when needed
 
-## 📊 API Endpoints
+## API Endpoints
 
 - `GET /health` - Health check
 - `POST /chat` - Send a message to the agent system
 - `GET /agents` - List all available agents
 - `GET /terminal-output` - Get terminal output (for debugging)
 
-## 🔧 Configuration
+## Configuration
 
 ### Mock Data
 Mock data for tickets and activities can be found in `main.py`:
@@ -342,10 +342,8 @@ Mock data for tickets and activities can be found in `main.py`:
 
 ### API Keys
 - **OPENAI_API_KEY** (Required): For GPT-5.1 LLM routing, intent detection, and all agent capabilities
-- **NEWS_API_KEY** (Optional): For web-based news fetching. Get a free key at [newsapi.org](https://newsapi.org/)
-  - If not provided, news agent uses GPT-5.1 to generate news summaries
 
-## 🎨 Frontend Features
+## Frontend Features
 
 - Real-time agent execution visualization with animated workflow
 - Live terminal output display showing agent responses
@@ -356,22 +354,7 @@ Mock data for tickets and activities can be found in `main.py`:
 - Chat interface with user/bot message distinction
 - Smooth animations and transitions
 
-## 📝 License
+## License
 
 This project is for demonstration purposes.
 
-## 🤝 Company Information
-
-**Technology-Garage**
-- Founded: 2018
-- Headquarters: Chennai, India
-- Team Size: 50+ employees
-- Industries Served: Education, Healthcare, Finance, Retail, Sports
-
-### Services:
-- Custom Software Development
-- AI & Machine Learning Solutions
-- Cloud Infrastructure Management
-- Mobile App Development
-- Digital Transformation Consulting
-- EdTech Solutions
