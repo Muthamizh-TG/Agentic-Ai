@@ -77,7 +77,6 @@ copy .env.example .env
 5. Edit `.env` and add your API keys:
 ```
 OPENAI_API_KEY=your_openai_api_key_here
-NEWS_API_KEY=your_newsapi_key_here (optional)
 ```
 
 ### Frontend Setup
@@ -181,6 +180,22 @@ The frontend will start on `http://localhost:5173`
 - "What can you help me with?"
 - "Good morning"
 
+### Comprehensive Overview (All Agents)
+Get a complete executive summary from all agents at once:
+- "Get me a summary of everything that's happening"
+- "What's happening overall?"
+- "Give me a complete overview"
+- "Show me everything going on"
+- "Full status update"
+- "What's the overall status?"
+- "Complete summary of all systems"
+
+This will invoke ALL agents and provide an intelligent analysis with:
+-  Key Priorities & Issues
+-  Current Status Overview
+-  Notable Updates
+-  Insights & Recommendations
+
 ### Multiple Agents (Combined Queries)
 You can query multiple agents at once:
 - "Show me open tickets and latest news"
@@ -192,6 +207,19 @@ You can query multiple agents at once:
 ## Sample Test Prompts
 
 Here are comprehensive test prompts to verify all agent functionalities:
+
+### Comprehensive Overview Test
+```
+0. "Get me a summary of everything that's happening"
+   Expected: Executive summary from ALL agents with:
+   - Key priorities from tickets
+   - Latest industry news
+   - Activity status and progress
+   - Infrastructure spending overview
+   - Intelligent analysis and recommendations
+   
+   This is the most powerful query - it runs all 4 agents and synthesizes everything!
+```
 
 ### Basic Single Agent Tests
 ```
@@ -312,11 +340,18 @@ Here are comprehensive test prompts to verify all agent functionalities:
 The system uses LangGraph to create an intelligent multi-agent workflow:
 
 1. **Router Node**: Uses GPT-5.1 to analyze user queries and determine which agents should handle the request
+   - **Special Detection**: Recognizes "everything happening" queries and activates ALL agents automatically
+   - Smart routing for single or multi-agent queries
+   
 2. **Agent Nodes**: Execute specific tasks with intelligent intent detection:
    - Each agent uses LLM to understand user intent and question type
    - Smart filtering and data extraction based on natural language patterns
    - Natural language enhancement for direct, contextual answers
+   
 3. **Summarize Node**: Combines responses from multiple agents into coherent summaries
+   - **Single Agent**: Returns response directly without modification
+   - **Multiple Agents**: Creates unified summary with key points from each
+   - **Comprehensive Overview**: Provides executive analysis with structured sections when all agents are invoked
 
 ### Key Features:
 - **Intent Detection**: Every agent analyzes user queries to understand what they're really asking
@@ -324,6 +359,7 @@ The system uses LangGraph to create an intelligent multi-agent workflow:
 - **Natural Language Processing**: Extracts topics, filters, and specific values from varied query formats
 - **Smart Response Enhancement**: Transforms raw data into conversational, direct answers
 - **Multi-Agent Coordination**: Seamlessly combines responses from multiple agents when needed
+- **Comprehensive Analysis**: Special "everything happening" mode for executive-level overviews across all systems
 
 ## API Endpoints
 
@@ -343,16 +379,6 @@ Mock data for tickets and activities can be found in `main.py`:
 ### API Keys
 - **OPENAI_API_KEY** (Required): For GPT-5.1 LLM routing, intent detection, and all agent capabilities
 
-## Frontend Features
-
-- Real-time agent execution visualization with animated workflow
-- Live terminal output display showing agent responses
-- Markdown support for formatted responses with syntax highlighting
-- Connection status monitoring
-- Responsive design with modern glassmorphism UI
-- Interactive node visualization showing active agents
-- Chat interface with user/bot message distinction
-- Smooth animations and transitions
 
 ## License
 
