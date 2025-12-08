@@ -17,7 +17,7 @@ const terminalStyles = {
   boxShadow: '0 2px 16px rgba(0,0,0,0.2)',
   border: '1px solid #333',
 };
-import { Ticket, Bot, Newspaper, Activity, ArrowRight, MessageSquare, Send, RefreshCw, AlertCircle, Building2, User, DollarSign } from 'lucide-react';
+import { Ticket, Bot, Newspaper, Banknote, Activity, ArrowRight, MessageSquare, Send, RefreshCw, AlertCircle, Building2, User, DollarSign } from 'lucide-react';
 
 // Enhanced White Theme Styles
 const styles = `
@@ -421,13 +421,13 @@ const styles = `
   }
 
   .right-panel {
-    width: 28vw;
+    width: 35vw;
     min-width: 320px;
-    max-width: 450px;
+    max-width: 550px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
+    border-left: 2px solid rgba(255, 255, 255, 1);
     flex-direction: column;
     box-shadow: -8px 0 40px rgba(0, 0, 0, 0.1);
     z-index: 2;
@@ -486,12 +486,13 @@ const styles = `
     padding: 1.5rem 1rem;
     display: flex;
     flex-direction: column;
+    border-radius: 0.25rem;
     gap: 1.25rem;
-    background: rgba(0, 0, 0, 0.05);
-    border-radius: 1rem;
+    background: transparent;
     box-shadow: inset 0 2px 20px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     margin: 0 1rem;
+    scroll-behavior: smooth;
   }
 
   @media (max-width: 480px) {
@@ -640,8 +641,10 @@ const styles = `
 
   .loading-bubble {
     background: rgba(255, 255, 255, 0.2);
+    display: none;
     color: #ffffff;
-    padding: 1rem 1.5rem;
+    padding: 1rem;
+    margin: 0.25rem;
     border-radius: 1.5rem;
     border: 1px solid rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(10px);
@@ -683,17 +686,17 @@ const styles = `
     display: flex;
     gap: 1rem;
     align-items: center;
-    background: rgba(255, 255, 255, 0.23);
+    background: transparent;
     border-radius: 0.5rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    padding: 0.2rem;
+    padding: 0.5rem;
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     transition: all 0.3s ease;
+    flex-shrink: 0;
   }
 
   .input-row:focus-within {
-    background: rgba(37, 0, 21, 1);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   }
 
@@ -702,7 +705,6 @@ const styles = `
     padding: 1rem 1.5rem;
     background: transparent;
     border: none;
-    border-radius: 0.5rem;
     color: #ffffffff;
     font-size: 1rem;
     outline: none;
@@ -710,7 +712,7 @@ const styles = `
   }
 
   .message-input::placeholder {
-    color: rgba(0, 0, 0, 0.6);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .message-input:disabled {
@@ -722,10 +724,10 @@ const styles = `
     padding: 0.8rem;
     margin: 0.2rem;
     min-width: 50px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.53) 100%);
+    background: linear-gradient(135deg, rgba(71, 0, 59, 1) 0%, rgba(0, 0, 0, 0.53) 100%);
     border: 2px solid rgba(255, 255, 255, 0.55);
     border-radius: 5rem;
-    color: #ffffffff;
+    color: #ffffffff;C
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
@@ -898,33 +900,65 @@ const styles = `
     font-style: italic;
   }
 
+  #terminal-output {
+    scrollbar-width: thin;
+    scrollbar-color: #ffffffff rgba(0, 0, 0, 0.3);
+  }
+
+  #terminal-output::-webkit-scrollbar {
+    width: 12px !important;
+  }
+
+  #terminal-output::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.5) !important;
+    border-radius: 10px !important;
+    margin: 0.5rem 0 !important;
+  }
+
+  #terminal-output::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #1eff00ff 0%, #000000ff 100%) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 15px 1eff00ff !important;
+    min-height: 40px !important;
+  }
+
+  #terminal-output::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #1eff00ff 0%, #00e5ff 100%) !important;
+    box-shadow: 0 0 25px rgba(0, 255, 135, 1) !important;
+  }
+
+  #terminal-output::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(180deg, #1eff00ff 0%, #00ffff 100%) !important;
+    box-shadow: 0 0 30px rgba(0, 255, 135, 1) !important;
+  }
+
   .terminal-container::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
   }
 
   .terminal-container::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     margin: 0.5rem 0;
   }
 
   .terminal-container::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, rgba(0, 255, 135, 0.4) 0%, rgba(0, 200, 255, 0.4) 100%);
+    background: linear-gradient(180deg, #00ff87 0%, #00c8ff 100%);
     border-radius: 10px;
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 0 0 10px rgba(0, 255, 135, 0.3);
+    border: none;
+    box-shadow: 0 0 15px rgba(0, 255, 135, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
+    min-height: 40px;
   }
 
   .terminal-container::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, rgba(0, 255, 135, 0.6) 0%, rgba(0, 200, 255, 0.6) 100%);
-    box-shadow: 0 0 15px rgba(0, 255, 135, 0.5);
-    border-color: rgba(0, 255, 135, 0.3);
+    background: linear-gradient(180deg, #00ffaa 0%, #00e5ff 100%);
+    box-shadow: 0 0 25px rgba(0, 255, 135, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.15);
   }
 
   .terminal-container::-webkit-scrollbar-thumb:active {
-    background: linear-gradient(135deg, rgba(0, 255, 135, 0.8) 0%, rgba(0, 200, 255, 0.8) 100%);
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.7);
+    background: linear-gradient(180deg, #00ffcc 0%, #00ffff 100%);
+    box-shadow: 0 0 30px rgba(0, 255, 135, 1), inset 0 0 15px rgba(255, 255, 255, 0.2);
   }
 
   .execution-status {
@@ -1011,14 +1045,18 @@ const LangGraphVisualizer = () => {
         const response = await fetch('http://localhost:8000/terminal-output');
         if (!response.ok) {
           setTerminalConnected(false);
+          setIsConnected(false);
           setTerminalOutput('Unable to fetch terminal output.');
           return;
         }
         const text = await response.text();
         setTerminalOutput(text);
         setTerminalConnected(true);
+        setIsConnected(true);
+        setConnectionError(null);
       } catch {
         setTerminalConnected(false);
+        setIsConnected(false);
         setTerminalOutput('Unable to fetch terminal output.');
       }
     };
@@ -1074,7 +1112,7 @@ const LangGraphVisualizer = () => {
       id: 'infrastructure_cost_monitor',
       type: 'agent',
       label: 'Infrastructure Cost Monitor',
-      icon: DollarSign,
+      icon: Banknote,
       description: 'Monitors cloud infrastructure costs (AWS, Azure, GCP, Firebase, etc.)',
       details: 'Function: infrastructure_cost_monitor_node()\nCapabilities: Cloud cost tracking, pricing comparison',
     },
@@ -1103,7 +1141,12 @@ const LangGraphVisualizer = () => {
 
   // Scroll to bottom on messages update
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesEndRef.current) {
+      // Use setTimeout to ensure DOM has updated before scrolling
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 0);
+    }
   }, [messages, isLoading]);
 
   // Check backend connection
@@ -1152,6 +1195,16 @@ const LangGraphVisualizer = () => {
     const newMessage = { type: 'user', content: userInput };
     setMessages(prev => [...prev, newMessage]);
 
+    // Show immediate loading message
+    setMessages(prev => [
+      ...prev,
+      {
+        type: 'bot',
+        content: '',
+        isLoading: true
+      }
+    ]);
+
     // Show 'Thinking...' in terminal while waiting for agent responses
     setTerminalOutput('Thinking...');
 
@@ -1188,7 +1241,7 @@ const LangGraphVisualizer = () => {
       // Show agents being invoked in terminal
       setTerminalOutput(
         agentNames.length > 0
-          ? `Invoking agents: ${agentNames.join(', ')}\n\n`
+          ? `Invoking agents: ${agentNames.join(', ')}\n\nAgent Responding...\n`
           : ''
       );
 
@@ -1230,16 +1283,26 @@ const LangGraphVisualizer = () => {
         });
         setTerminalOutput(prev => prev + allResponses);
         setExecutionPath([]);
-        setMessages(prev => [
-          ...prev,
-          {
-            type: 'bot',
-            content: summaryContent,
-            agent: 'LLM Router',
-            executionTime: data.executionTime || 'N/A',
-          }
-        ]);
-        setIsLoading(false);
+        
+        // Show response in chat after terminal is updated (add extra delay for visibility)
+        setTimeout(() => {
+          setMessages(prev => {
+            const updated = [...prev];
+            // Find and update the last loading message
+            for (let i = updated.length - 1; i >= 0; i--) {
+              if (updated[i]?.isLoading) {
+                updated[i] = {
+                  ...updated[i],
+                  content: summaryContent,
+                  isLoading: false
+                };
+                break;
+              }
+            }
+            return updated;
+          });
+          setIsLoading(false);
+        }, 1000);
       }, delay + 800);
     } catch (error) {
       const errorMessage = { 
@@ -1266,7 +1329,13 @@ const LangGraphVisualizer = () => {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      // Keep input focused during send to prevent layout shift
+      const inputElement = e.target;
       sendMessage();
+      // Restore focus after message sent
+      setTimeout(() => {
+        inputElement?.focus();
+      }, 100);
     }
   };
 
@@ -1281,10 +1350,9 @@ const LangGraphVisualizer = () => {
           <div className="header-content">
             <div>
               <h1 className="header-title">
-                <Building2 className="w-6 h-6" />
-                Agent System
+                Agentic AI 
               </h1>
-              <p className="header-subtitle">Multi-agent task management and information system</p>
+              <p className="header-subtitle" style={{ fontSize: 12, textAlign: 'right' }}>by Technology Garage</p>
             </div>
             <div className="connection-status">
               <div className={`status-dot ${isConnected ? 'status-connected' : 'status-disconnected'}`}></div>
@@ -1294,7 +1362,7 @@ const LangGraphVisualizer = () => {
         </div>
 
 
-        {/* Responsive Workflow Canvas using CSS Grid (80vh) */}
+        {/* Responsive Workflow Canvas using CSS Grid (75vh) */}
         <div
           className="workflow-canvas"
           style={{
@@ -1397,7 +1465,6 @@ const LangGraphVisualizer = () => {
                 key={node.id}
                 ref={nodeRefs[node.id]}
                 style={nodeStyle}
-                onClick={() => setSelectedNode(selectedNode === node.id ? null : node.id)}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
                   <IconComponent style={{ width: 30, height: 30, color: isActive ? '#000000ff' : '#ffffffff' }} />
@@ -1407,8 +1474,8 @@ const LangGraphVisualizer = () => {
             );
           })}
 
-            {/* Node Details */}
-            {selectedNode && (
+            {/* Node Details - Hidden */}
+            {false && selectedNode && (
               <div className="node-details" style={{ left: 350, top: 500, position: 'absolute', zIndex: 20 }}>
                 <h3 className="details-title">
                   {nodes.find(n => n.id === selectedNode)?.label}
@@ -1431,46 +1498,65 @@ const LangGraphVisualizer = () => {
             )}
         </div>
         {/* Terminal Output Overlay (40vh, bottom) */}
-        <div className="terminal-container" style={{
+        <div id="terminal-output" className="terminal-container" style={{
           height: '25vh',
-          background: '#000000ff',
+          background: 'linear-gradient(135deg, #0a0a0aff 0%, #1a0a1aff 50%, #0a0a0aff 100%)',
           color: '#ffffffff',
           fontFamily: 'monospace',
-          fontSize: '1rem',
-          borderTop: '2px solid #333',
-          boxShadow: '0 -2px 16px rgba(0,0,0,0.2)',
+          fontSize: '0.95rem',
+          borderTop: '2px solid #ffffffff',
+          boxShadow: 'inset 0 2px 20px rgba(0, 255, 135, 0.05), 0 -2px 16px rgba(0,0,0,0.4)',
           zIndex: 10,
-          padding: '1rem',
+          padding: '1.25rem',
           overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
         }}>
-          <div style={{ fontWeight: 600, marginBottom: '0.625rem', color: '#60a5fa', fontSize: '0.9375rem' }}>Terminal Output</div>
-          <div style={{ marginBottom: '0.5rem', color: terminalConnected === true ? '#10b981' : '#ef4444', fontWeight: 600, fontSize: '0.8125rem' }}>
-            {terminalConnected === true && '● Connected'}
-            {terminalConnected === false && '● Disconnected'}
+          <div style={{ fontWeight: 700, marginBottom: '0rem', color: '#ae00ffff', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: '0.2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              Terminal Output
+            </div>
+            <div style={{ color: terminalConnected === true ? '#00ff87ff' : '#ff3333ff', fontWeight: 600, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: terminalConnected === true ? '#00ff87' : '#ff3333', boxShadow: terminalConnected === true ? '0 0 8px #00ff87' : '0 0 8px #ff3333' }}></span>
+              {terminalConnected === true && 'Connected'}
+              {terminalConnected === false && 'Disconnected'}
+            </div>
           </div>
           {/* Syntax-highlighted terminal output */}
           {terminalOutput && (
-            <div style={{ marginTop: '0.75rem', flex: 1, overflowY: 'auto' }}>
+            <div style={{ marginTop: '0.5rem', flex: 1, overflowY: 'auto', lineHeight: '1.6' }}>
               {terminalOutput.split('\n').map((line, idx) => {
-                let lineColor = '#94a3b8';
+                let lineColor = '#b0b0b0';
+                let fontWeight = '400';
+                let textShadow = 'none';
                 
                 if (line.includes('Thinking...')) {
                   lineColor = '#fbbf24';
+                  fontWeight = '600';
+                  textShadow = '0 0 8px rgba(251, 191, 36, 0.3)';
                 } else if (line.includes('Invoking agents:')) {
-                  lineColor = '#60a5fa';
+                  lineColor = '#00d9ff';
+                  fontWeight = '600';
+                  textShadow = '0 0 8px rgba(0, 217, 255, 0.4)';
                 } else if (line.includes('---') && line.includes('Agent')) {
-                  lineColor = '#10b981';
+                  lineColor = '#00ff87';
+                  fontWeight = '700';
+                  textShadow = '0 0 10px rgba(0, 255, 135, 0.5)';
                 } else if (line.toLowerCase().includes('error') || line.includes('[400]')) {
-                  lineColor = '#ef4444';
+                  lineColor = '#ff3333';
+                  fontWeight = '700';
+                  textShadow = '0 0 8px rgba(255, 51, 51, 0.4)';
                 } else if (line.includes('is answering')) {
-                  lineColor = '#a78bfa';
+                  lineColor = '#d084ff';
+                  fontWeight = '600';
+                  textShadow = '0 0 8px rgba(208, 132, 255, 0.3)';
+                } else if (line.trim() === '') {
+                  return <div key={idx} style={{ height: '0.5rem' }} />;
                 }
                 
                 return (
-                  <div key={idx} style={{ color: lineColor, marginBottom: '0.25rem', lineHeight: '1.4' }}>
-                    {line}
+                  <div key={idx} style={{ color: lineColor, marginBottom: '0.35rem', lineHeight: '1.5', fontWeight, textShadow, fontFamily: "'Fira Code', 'Courier New', monospace" }}>
+                    {line || ' '}
                   </div>
                 );
               })}
@@ -1505,10 +1591,10 @@ const LangGraphVisualizer = () => {
               </button>
             </div>
           )}
-          {messages.length === 0 && !connectionError && (
+          {messages.length === 0 && (
             <div className="empty-state">
               <Activity className="empty-icon" />
-              <p>Start chatting to see the workflow in action!</p>
+              <p>{connectionError ? 'Waiting for connection...' : 'Start chatting to see the workflow in action!'}</p>
             </div>
           )}
           {messages.map((msg, idx) => (
@@ -1522,8 +1608,8 @@ const LangGraphVisualizer = () => {
               }`}>
                 {/* Show 'Response' label for LLM router */}
                 {msg.type === 'bot' && (
-                  <div style={{ fontWeight: 700, color: '#22c55e', marginBottom: 4 }}>
-                    Response
+                  <div style={{ fontWeight: 700, color: msg.isLoading ? '#00626eff' : '#22c55e', marginBottom: 8, fontSize: '0.95rem' }}>
+                    {msg.isLoading ? 'Thinking...' : ' Response'}
                   </div>
                 )}
                 {msg.type === 'error' && msg.canRetry && (
@@ -1538,9 +1624,10 @@ const LangGraphVisualizer = () => {
                 )}
                 {/* Render markdown for bot messages */}
                 {msg.type === 'bot' ? (
-                  <div className="markdown-content">
-                    <ReactMarkdown
-                      components={{
+                  !msg.isLoading && (
+                    <div className="markdown-content">
+                      <ReactMarkdown
+                        components={{
                         code({node, inline, className, children, ...props}) {
                           const match = /language-(\w+)/.exec(className || '');
                           return !inline && match ? (
@@ -1562,26 +1649,14 @@ const LangGraphVisualizer = () => {
                     >
                       {msg.content}
                     </ReactMarkdown>
-                  </div>
+                    </div>
+                  )
                 ) : (
                   <p>{msg.content}</p>
                 )}
               </div>
             </div>
           ))}
-          {isLoading && (
-            <div className="loading-message">
-              <div className="message-avatar"><Bot size={22} /></div>
-              <div className="loading-bubble">
-                <div className="loading-content">
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <div className="skeleton-loader skeleton-text" style={{ width: '100%' }}></div>
-                    <div className="skeleton-loader skeleton-text skeleton-text-short"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
           <div ref={messagesEndRef} />
         </div>
 

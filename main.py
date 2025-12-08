@@ -52,6 +52,15 @@ llm = ChatOpenAI(model="gpt-5.1", temperature=0.7, api_key=OPENAI_API_KEY)
 # Terminal output storage
 latest_agent_output = "(No agent output yet)"
 
+# Helper function to limit response to 10 lines
+def limit_response(response: str, max_lines: int = 10) -> str:
+    """Limit response to max_lines, add note if truncated"""
+    lines = response.split('\n')
+    if len(lines) > max_lines:
+        truncated = '\n'.join(lines[:max_lines])
+        return f"{truncated}\n\n[Response limited to summary. Ask for 'details' or 'full details' for complete information]"
+    return response
+
 # ==================== STATE DEFINITION ====================
 class AgentState(TypedDict):
     """State passed between agents in the graph"""
@@ -192,6 +201,13 @@ Created: {ticket['created_at']}"""
     
     except Exception as e:
         result = f"Error analyzing tickets: {str(e)}"
+    
+    # Check if user wants detailed response
+    wants_details = any(word in user_input.lower() for word in ['detail', 'full', 'complete', 'comprehensive'])
+    
+    # Limit response to 10 lines if not requesting details
+    if not wants_details:
+        result = limit_response(result, max_lines=10)
     
     # Enhance result with LLM for natural language questions
     if question_type in ["who", "what", "when", "count"] and result:
@@ -392,6 +408,13 @@ Examples:
     except Exception as e:
         result = f"Error fetching activities: {str(e)}"
     
+    # Check if user wants detailed response
+    wants_details = any(word in user_input.lower() for word in ['detail', 'full', 'complete', 'comprehensive'])
+    
+    # Limit response to 10 lines if not requesting details
+    if not wants_details:
+        result = limit_response(result, max_lines=10)
+    
     # Enhance result with LLM for natural language questions
     if question_type in ["who", "what", "when", "count", "status_check"] and result:
         enhance_prompt = f"""User asked: "{user_input}"
@@ -554,6 +577,13 @@ Examples:
     
     except Exception as e:
         result = f"Error fetching infrastructure costs: {str(e)}"
+    
+    # Check if user wants detailed response
+    wants_details = any(word in user_input.lower() for word in ['detail', 'full', 'complete', 'comprehensive'])
+    
+    # Limit response to 10 lines if not requesting details
+    if not wants_details:
+        result = limit_response(result, max_lines=10)
     
     # Enhance result with LLM for natural language questions
     if question_type in ["how_much", "what", "which", "compare"] and result:
@@ -773,19 +803,14 @@ Here are reports from all departments:
 
 {responses_text}
 
-Provide a comprehensive executive summary that:
-1. **Highlights key issues and priorities** - What needs immediate attention?
-2. **Identifies trends and patterns** - What's happening across all areas?
-3. **Gives actionable insights** - What should be done?
-4. **Provides a clear overview** - Overall health and status
+Create a CONCISE executive summary (max 10 lines) that covers:
+1. **Key Priorities & Issues** - Most critical blockers
+2. **Current Status** - Overall health snapshot
+3. **Notable Updates** - Top 1-2 recent developments
+4. **Quick Recommendations** - Top 1-2 immediate actions
 
-Structure your response with clear sections:
--  **Key Priorities & Issues**
--  **Current Status Overview**
--  **Notable Updates**
--  **Insights & Recommendations**
-
-Be concise but comprehensive. Make it easy to understand what's happening across the entire organization.
+Format as bullet points. Be ultra-concise - assume busy executive reading in 30 seconds.
+NO long paragraphs. Each section: max 1-2 lines.
 """
         else:
             # Standard multi-agent summary
@@ -793,6 +818,7 @@ Be concise but comprehensive. Make it easy to understand what's happening across
             You are a helpful assistant. Create a single, clear, and concise summary from these agent responses.
             Include at least one key point from EVERY agent's response.
             Do NOT repeat agent names in the summary.
+            Keep it within 10 lines maximum.
             
             {responses_text}
             """
@@ -800,6 +826,13 @@ Be concise but comprehensive. Make it easy to understand what's happening across
         try:
             response = llm.invoke([HumanMessage(content=prompt)])
             result = response.content.strip()
+            
+            # Check if user wants detailed response
+            wants_details = any(word in user_input.lower() for word in ['detail', 'full', 'complete', 'comprehensive', 'everything'])
+            
+            # Limit summary to 10 lines by default (for all cases unless user asks for details)
+            if not wants_details:
+                result = limit_response(result, max_lines=10)
         except Exception as e:
             result = f"Error creating summary: {str(e)}"
     
