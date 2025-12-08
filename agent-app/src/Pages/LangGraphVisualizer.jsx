@@ -1032,11 +1032,13 @@ if (typeof document !== 'undefined') {
 const LangGraphVisualizer = () => {
   // Terminal output state
   const [terminalOutput, setTerminalOutput] = useState('');
-  // Clear terminal on page refresh
+  const [terminalConnected, setTerminalConnected] = useState(null);
+
+  // Clear terminal on page refresh and check connection
   useEffect(() => {
     setTerminalOutput('');
+    checkConnection();
   }, []);
-  const [terminalConnected, setTerminalConnected] = useState(null);
 
   // Fetch terminal output from backend (plain text)
   useEffect(() => {
@@ -1046,21 +1048,17 @@ const LangGraphVisualizer = () => {
         if (!response.ok) {
           setTerminalConnected(false);
           setIsConnected(false);
-          setTerminalOutput('Unable to fetch terminal output.');
           return;
         }
-        const text = await response.text();
-        setTerminalOutput(text);
         setTerminalConnected(true);
         setIsConnected(true);
         setConnectionError(null);
       } catch {
         setTerminalConnected(false);
         setIsConnected(false);
-        setTerminalOutput('Unable to fetch terminal output.');
       }
     };
-    fetchTerminalOutput();
+    // Only check connection, don't fetch/display backend terminal output
     const interval = setInterval(fetchTerminalOutput, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -1195,7 +1193,7 @@ const LangGraphVisualizer = () => {
     const newMessage = { type: 'user', content: userInput };
     setMessages(prev => [...prev, newMessage]);
 
-    // Show immediate loading message
+    // Show immediate loading message in chat
     setMessages(prev => [
       ...prev,
       {
@@ -1204,9 +1202,6 @@ const LangGraphVisualizer = () => {
         isLoading: true
       }
     ]);
-
-    // Show 'Thinking...' in terminal while waiting for agent responses
-    setTerminalOutput('Thinking...');
 
     try {
       const response = await fetch('http://localhost:8000/chat', {
@@ -1237,14 +1232,7 @@ const LangGraphVisualizer = () => {
       }
       // Always use the summary field from backend for chat display
       let summaryContent = data.summary || data.response || 'No response';
-
-      // Show agents being invoked in terminal
-      setTerminalOutput(
-        agentNames.length > 0
-          ? `Invoking agents: ${agentNames.join(', ')}\n\nAgent Responding...\n`
-          : ''
-      );
-
+      
       // Animate router, then each agent one by one
       let delay = 0;
       setExecutionPath([]); // All gray
@@ -1254,56 +1242,65 @@ const LangGraphVisualizer = () => {
         setTimeout(() => setExecutionPath(['router', nodeId]), delay += 1200);
         setTimeout(() => setExecutionPath(['router']), delay += 800);
       });
+      
+      const totalAnimationTime = delay + 800; // Total time for all animations
 
-      // Show all agent responses in terminal after invocation
+      // Show all agent responses in terminal AFTER visualization completes
       setTimeout(() => {
+        let terminalContent = '';
         let allResponses = '';
         let uniqueResponses = new Set();
-        // Collect all agent responses and summary
+        
+        // Build terminal header
+        terminalContent += agentNames.length > 0
+          ? `Invoking agents: ${agentNames.join(', ')}\n\n`
+          : '';
+        
+        // Collect all agent responses
         let responseBlocks = [];
         if (hasAgentResponses && Object.keys(agentResponses).length > 0) {
           Object.entries(agentResponses).forEach(([agent, resp], idx, arr) => {
             responseBlocks.push({ agent, resp });
           });
         }
-        // Add summary as a block if not already present
-        if (summaryContent && (!responseBlocks.some(b => b.resp === summaryContent))) {
-          responseBlocks.push({ agent: 'Summary', resp: summaryContent });
-        }
-        // Only show unique responses
+        
+        // Show agent responses (but not the summary to avoid duplication)
         responseBlocks.forEach(({ agent, resp }, idx) => {
           if (!uniqueResponses.has(resp)) {
-            if (agent !== 'Summary') {
-              allResponses += `\n[${agent} is answering...]\n--- ${agent} ---\n${resp}\n`;
-            } else {
-              allResponses += `\n${resp}`;
-            }
+            allResponses += `\n[${agent} is answering...]\n--- ${agent} ---\n${resp}\n`;
             uniqueResponses.add(resp);
           }
         });
-        setTerminalOutput(prev => prev + allResponses);
-        setExecutionPath([]);
         
-        // Show response in chat after terminal is updated (add extra delay for visibility)
-        setTimeout(() => {
-          setMessages(prev => {
-            const updated = [...prev];
-            // Find and update the last loading message
-            for (let i = updated.length - 1; i >= 0; i--) {
-              if (updated[i]?.isLoading) {
-                updated[i] = {
-                  ...updated[i],
-                  content: summaryContent,
-                  isLoading: false
-                };
-                break;
-              }
+        // Add summary at the end only if it's different from agent responses
+        if (summaryContent && !uniqueResponses.has(summaryContent)) {
+          allResponses += `\n${summaryContent}`;
+        }
+        
+        // Update terminal with all content at once
+        setTerminalOutput(terminalContent + allResponses);
+        setExecutionPath([]);
+      }, totalAnimationTime);
+      
+      // Show response in chat AFTER terminal output (with delay for visibility)
+      setTimeout(() => {
+        setMessages(prev => {
+          const updated = [...prev];
+          // Find and update the last loading message
+          for (let i = updated.length - 1; i >= 0; i--) {
+            if (updated[i]?.isLoading) {
+              updated[i] = {
+                ...updated[i],
+                content: summaryContent,
+                isLoading: false
+              };
+              break;
             }
-            return updated;
-          });
-          setIsLoading(false);
-        }, 1000);
-      }, delay + 800);
+          }
+          return updated;
+        });
+        setIsLoading(false);
+      }, totalAnimationTime + 500);
     } catch (error) {
       const errorMessage = { 
         type: 'error', 
